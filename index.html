@@ -39,8 +39,6 @@
 }
 </script>
 
-<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-
 <style>
   :root{
     --surface:rgba(15, 15, 15, .55); /* رنگ پیش‌فرض مستطیل (مشکی شیشه‌ای) */
@@ -243,20 +241,76 @@
 </head>
 <body>
 
+    <div data-nosnippet style="display: none; visibility: hidden; opacity: 0; width: 0; height: 0; position: absolute;">مغنی</div>
 
-    <!-- 👇 متن مخفی برای گوگل و کاربر 👇 -->
-    <div data-nosnippet style="display: none; visibility: hidden; opacity: 0; width: 0; height: 0; position: absolute;">فتاح رزاق مغنی مشتری رحمان سریع</div>
-    <!-- 👆 --------------------------------- 👆 -->
-
-
-  <!-- ===== دکمه‌های تغییر رنگ مستطیل ===== -->
-  <div class="color-switcher">
+    <div class="color-switcher">
     <button onclick="changeCardColor('teal', this)" style="background:#034650;">فروش</button>
     <button onclick="changeCardColor('gold', this)" style="background:#33230a;">دامنه</button>
-    <button onclick="changeCardColor('dark', this)" style="background:#2a2a2a;">سایت</button>
+
+    <button onclick="changeCardColor('dark', this)" style="background:#2a2a2a;" id="visit-btn">
+    <span id="text-site">سایت</span><span id="num-visits" style="display:none;"></span>
+    </button>
+
     <button onclick="changeCardColor('blue', this)" style="background:#051a2b;">استخر</button>
     <button onclick="changeCardColor('orange', this)" style="background:#3a1d0a;">.آی‌آر</button>
-  </div>
+    </div>
+
+    <script>
+    // نام اختصاصی برای جلوگیری از تداخل (این را تغییر ندهید)
+    const NAMESPACE = 'stakhr_ir_2026_private';
+    const KEY = 'unique_visitors';
+
+    // ثبت بازدیدکننده جدید در سرور
+    if (!sessionStorage.getItem('has_visited')) {
+      fetch(`https://abacus.jasoncameron.dev/hit/${NAMESPACE}/${KEY}`)
+      .then(res => res.json())
+      .then(data => {
+        sessionStorage.setItem('has_visited', 'true');
+        sessionStorage.setItem('total_visitors', data.value);
+        })
+      .catch(() => {});
+      }
+
+      // تابع نمایش/مخفی کردن آمار (فقط با میانبر)
+      function toggleVisits() {
+        const textSite = document.getElementById('text-site');
+        const numVisits = document.getElementById('num-visits');
+
+        // اگر کلمه سایت دیده می‌شود
+        if (textSite.style.display !== 'none') {
+          textSite.style.display = 'none';
+          numVisits.style.display = 'inline';
+
+          // گرفتن آمار از سرور
+          fetch(`https://abacus.jasoncameron.dev/get/${NAMESPACE}/${KEY}`)
+          .then(res => res.json())
+          .then(data => {
+            numVisits.innerText = data.value;
+            })
+          .catch(() => {
+            numVisits.innerText = 'خطا';
+            });
+          } else {
+            // برگرداندن به حالت اول
+            textSite.style.display = 'inline';
+            numVisits.style.display = 'none';
+            }
+          }
+
+          // میانبر کلیدهای Shift + M
+          document.addEventListener('keydown', function(e) {
+            if (e.shiftKey && (e.key === 'M' || e.key === 'm' || e.key === 'پ')) {
+              toggleVisits();
+              }
+            });
+            </script>
+
+
+
+
+
+
+
 
   <main class="card" itemscope itemtype="https://schema.org/Product">
 
